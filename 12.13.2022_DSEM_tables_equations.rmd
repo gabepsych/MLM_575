@@ -1,0 +1,842 @@
+---
+title: "Tables of DSEM Estimates"
+author: "Gabriel A. Leon"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(ggplot2)
+library(dplyr)
+library(psych)
+library(readxl)
+library(tictoc)
+library(DescTools)
+library(sjPlot)
+library(sjmisc)
+library(car)
+library(stringr)
+library(MplusAutomation)
+library(jtools)
+library(stringr)
+library(rempsyc)
+library(flextable)
+source("random_eff_reliabilities.r")
+#gc(rm(list=ls()))
+```
+
+
+Model 1 
+Fit baseline model with no covariates
+```{r}
+# runModels(
+#   paste(getwd(),"DSEM","Model1",sep = "/"),
+#   recursive=TRUE,
+#   showOutput=TRUE,
+#   replaceOutfile = "always",
+#   killOnFail = FALSE,
+#   quiet = FALSE,
+#   logFile = "Model1_runs.txt")
+# 
+# runModels(
+#   paste(getwd(),"DSEM","Model1_12.15.2022",
+#         "DSEM_Triadic_FreePlay_6pp_model1.1_MomAffect.inp", sep = "/"),
+#   showOutput=TRUE,
+#   replaceOutfile = "always",
+#   killOnFail = FALSE,
+#   quiet = FALSE)
+# 
+
+# runModels(
+#   paste(getwd(),"DSEM","Model1_12.15.2022",
+#         "DSEM_Triadic_FreePlay_6pp_model1.2_DadAffect.inp", sep = "/"),
+#   showOutput=TRUE,
+#   replaceOutfile = "always",
+#   killOnFail = FALSE,
+#   quiet = FALSE)
+# 
+# runModels(
+#   paste(getwd(),"DSEM","Model1_12.15.2022",
+#         "DSEM_Triadic_FreePlay_6pp_model1.3_InfantAffect.inp", sep = "/"),
+#   showOutput=TRUE,
+#   replaceOutfile = "always",
+#   killOnFail = FALSE,
+#   quiet = FALSE)
+
+model1_list <- readModels(paste(getwd(),"DSEM","Model1_12.15.2022",sep = "/"),
+                          what = "parameters",
+                          recursive = TRUE)
+
+model1_tech4 <- readModels(paste(getwd(),"DSEM","Model1",sep = "/"),
+                          what = "tech4",
+                          recursive = TRUE)
+
+random_eff_reliabilities(model1_tech4)
+
+
+models1_stdyx <- list()
+for(i in 1:length(model1_list)){
+  models1_stdyx[[i]] <- model1_list[[i]]$parameters$stdyx.standardized
+}
+for(i in 1:length(models1_stdyx)){
+  models1_stdyx[[i]] <- models1_stdyx[[i]] #%>% dplyr::filter(sig == TRUE)
+}
+models1_stdyx <- do.call("rbind", models1_stdyx)
+
+models1_unstand <- list()
+for(i in 1:length(model1_list)){
+  models1_unstand[[i]] <- model1_list[[i]]$parameters$unstandardized
+}
+for(i in 1:length(models1_unstand)){
+  models1_unstand[[i]] <- models1_unstand[[i]] #%>% dplyr::filter(sig == TRUE)
+}
+models1_unstand <- do.call("rbind", models1_unstand[-3])
+
+```
+
+
+# Parenting Stress and Hair Cortisol Concentration (single moderator)
+
+
+```{r}
+# runModels(
+#   paste(getwd(),"DSEM","Models_all_singleModerator",
+#         "DSEM_Triadic_FreePlay_6pp_model3.1.1_MomAff_HCC.inp", sep = "/"),
+#   showOutput=TRUE,
+#   replaceOutfile = "always",
+#   killOnFail = FALSE,
+#   quiet = FALSE)
+# 
+# runModels(
+#   paste(getwd(),"DSEM","Models_all_singleModerator",
+#         "DSEM_Triadic_FreePlay_6pp_model3.1.2_MomAff_HCC.inp", sep = "/"),
+#   showOutput=TRUE,
+#   replaceOutfile = "always",
+#   killOnFail = FALSE,
+#   quiet = FALSE)
+# 
+# runModels(
+#   paste(getwd(),"DSEM","Models_all_singleModerator",
+#         "DSEM_Triadic_FreePlay_6pp_model3.1.3_MomAff_HCC.inp", sep = "/"),
+#   showOutput=TRUE,
+#   replaceOutfile = "always",
+#   killOnFail = FALSE,
+#   quiet = FALSE)
+# 
+# runModels(
+#   paste(getwd(),"DSEM","Models_all_singleModerator",
+#         "DSEM_Triadic_FreePlay_6pp_model3.2.1_DadAff_HCC.inp", sep = "/"),
+#   showOutput=TRUE,
+#   replaceOutfile = "always",
+#   killOnFail = FALSE,
+#   quiet = FALSE)
+# 
+# 
+# runModels(
+#   paste(getwd(),"DSEM","Models_all_singleModerator",
+#         "DSEM_Triadic_FreePlay_6pp_model3.2.2_DadAff_HCC.inp", sep = "/"),
+#   showOutput=TRUE,
+#   replaceOutfile = "always",
+#   killOnFail = FALSE,
+#   quiet = FALSE)
+# 
+# runModels(
+#   paste(getwd(),"DSEM","Models_all_singleModerator",
+#         "DSEM_Triadic_FreePlay_6pp_model3.2.3_DadAff_HCC.inp", sep = "/"),
+#   showOutput=TRUE,
+#   replaceOutfile = "always",
+#   killOnFail = FALSE,
+#   quiet = FALSE)
+# 
+# runModels(
+#   paste(getwd(),"DSEM","Models_all_singleModerator",
+#         "DSEM_Triadic_FreePlay_6pp_model3.3.1_InfAff_HCC.inp", sep = "/"),
+#   showOutput=TRUE,
+#   replaceOutfile = "always",
+#   killOnFail = FALSE,
+#   quiet = FALSE)
+# 
+# runModels(
+#   paste(getwd(),"DSEM","Models_all_singleModerator",
+#         "DSEM_Triadic_FreePlay_6pp_model3.3.2_InfAff_HCC.inp", sep = "/"),
+#   showOutput=TRUE,
+#   replaceOutfile = "always",
+#   killOnFail = FALSE,
+#   quiet = FALSE)
+# 
+# runModels(
+#   paste(getwd(),"DSEM","Models_all_singleModerator",
+#         "DSEM_Triadic_FreePlay_6pp_model3.3.3_InfAff_HCC.inp", sep = "/"),
+#   showOutput=TRUE,
+#   replaceOutfile = "always",
+#   killOnFail = FALSE,
+#   quiet = FALSE)
+# 
+# runModels(
+#   paste(getwd(),"DSEM","Models_all_singleModerator",
+#         "DSEM_Triadic_FreePlay_6pp_model4.1.1_MomAff_PSI.inp", sep = "/"),
+#   showOutput=TRUE,
+#   replaceOutfile = "always",
+#   killOnFail = FALSE,
+#   quiet = FALSE)
+# 
+# runModels(
+#   paste(getwd(),"DSEM","Models_all_singleModerator",
+#         "DSEM_Triadic_FreePlay_6pp_model4.1.2_MomAff_PSI.inp", sep = "/"),
+#   showOutput=TRUE,
+#   replaceOutfile = "always",
+#   killOnFail = FALSE,
+#   quiet = FALSE)
+# 
+# 
+# runModels(
+#   paste(getwd(),"DSEM","Models_all_singleModerator",
+#         "DSEM_Triadic_FreePlay_6pp_model4.2.1_DadAff_PSI.inp", sep = "/"),
+#   showOutput=TRUE,
+#   replaceOutfile = "always",
+#   killOnFail = FALSE,
+#   quiet = FALSE)
+# 
+# runModels(
+#   paste(getwd(),"DSEM","Models_all_singleModerator",
+#         "DSEM_Triadic_FreePlay_6pp_model4.2.2_DadAff_PSI.inp", sep = "/"),
+#   showOutput=TRUE,
+#   replaceOutfile = "always",
+#   killOnFail = FALSE,
+#   quiet = FALSE)
+# 
+# 
+# runModels(
+#   paste(getwd(),"DSEM","Models_all_singleModerator",
+#         "DSEM_Triadic_FreePlay_6pp_model4.3.1_InfAff_PSI.inp", sep = "/"),
+#   showOutput=TRUE,
+#   replaceOutfile = "always",
+#   killOnFail = FALSE,
+#   quiet = FALSE)
+# 
+# runModels(
+#   paste(getwd(),"DSEM","Models_all_singleModerator",
+#         "DSEM_Triadic_FreePlay_6pp_model4.3.2_InfAff_PSI.inp", sep = "/"),
+#   showOutput=TRUE,
+#   replaceOutfile = "always",
+#   killOnFail = FALSE,
+#   quiet = FALSE)
+# 
+
+
+
+models_all_list <- readModels(paste(getwd(),"DSEM","models_all_singleModerator",sep = "/"),
+                          what = "parameters",
+                          recursive = TRUE)
+
+models_all_stdyx <- list()
+for(i in 1:length(models_all_list)){
+  models_all_stdyx[[i]] <- models_all_list[[i]]$parameters$stdyx.standardized
+}
+sapply(models_all_stdyx, ncol)
+for(i in 1:length(models_all_stdyx)){
+  models_all_stdyx[[i]] <- models_all_stdyx[[i]] %>% dplyr::filter(sig == TRUE)
+}
+models_all_stdyx <- do.call("rbind", models_all_stdyx)
+models_all_stdyx <- models_all_stdyx %>% dplyr::filter(param == "HM"|
+                                                         param == "HD"|
+                                                         param == "HI"|
+                                                         param == "PM"|
+                                                         param == "PD"|
+                                                         param == "OM"|
+                                                         param == "OD"|
+                                                         param == "DM"|
+                                                         param == "DD")
+
+models_all_tech4 <- readModels(paste(getwd(),"DSEM","models_all_singleModerator",sep = "/"),
+                          what = "tech4",
+                          recursive = TRUE)
+
+rand.reliab <- random_eff_reliabilities(models_all_tech4)
+rand.reliab <- do.call("rbind", rand.reliab)
+
+models_all_unstand <- list()
+for(i in 1:length(models_all_list)){
+  models_all_unstand[[i]] <- models_all_list[[i]]$parameters$unstandardized
+}
+for(i in 1:length(models_all_unstand)){
+  models_all_unstand[[i]] <- models_all_unstand[[i]] %>% dplyr::filter(sig == TRUE)
+}
+models_all_unstand <- do.call("rbind", models_all_unstand)
+models_all_unstand <- models_all_unstand %>% dplyr::filter(paramHeader != "Variances") %>%
+                                           dplyr::filter(param == "HM"|
+                                                         param == "HD"|
+                                                         param == "HI"|
+                                                         param == "PM"|
+                                                         param == "PD"|
+                                                         param == "OM"|
+                                                         param == "OD"|
+                                                         param == "DM"|
+                                                         param == "DD") %>% 
+  dplyr::filter(paramHeader != "Variances")
+
+```
+
+
+
+Mother's equation
+$$
+\begin{aligned}
+  \text{WITHIN MODEL - MOTHER} & \\
+  \text{Mom}_{tj}^w    & =  \text{Mom}_{j}^b + \phi_{1j} \text{Mom}_{(t-1)j}^w + \phi_{2j} \text{Dad}_{(t-1)j}^w + \phi_{3j} \text{Infant}_{(t-1)j}^w + e_{1tj}  \\
+  \text{Dad}_{tj}^w    & =  \text{Dad}_{j}^b + \phi_{4j} \text{Dad}_{(t-1)j}^w  + e_{2tj}  \\
+  \text{Infant}_{tj}^w    & =  \text{Infant}_{j}^b + \phi_{7j} \text{Infant}_{(t-1)j}^w  + e_{3tj}  \\
+  \left[\begin{array}
+  {rrr}
+  e_{1tj}\\
+  e_{2tj}\\
+  e_{3tj}\\
+  \end{array}\right] & \sim \mathcal{N}
+  \begin{pmatrix}
+  \left[\begin{array}
+  {rrr}
+  0\\
+  0\\
+  0\\
+  \end{array}\right],
+  \left[\begin{array}
+  {rrr}
+   \sigma_{1}^2 & & \\
+   \sigma_{21}^2 & \sigma_{2}^2 & \\
+   \sigma_{31}^2 & \sigma_{32}^2 & \sigma_{3}^2 \\
+   \end{array}\right]
+  \end{pmatrix} \\
+  \text{BETWEEN MODEL - MOTHER} & \\
+  \text{Mom}_{j}^b & = \gamma_{10} + \mu_{0j}\\
+  \text{Dad}_{j}^b & = \gamma_{20} + \mu_{1j}\\
+  \text{Infant}_{j}^b & = \gamma_{30} + \mu_{2j}\\
+  \phi_{1j} & = \gamma_{40}  + \mu_{3j}\\
+  \phi_{2j} & = \gamma_{50}   + \mu_{4j}\\
+  \phi_{3j} & = \gamma_{60}   + \mu_{5j}\\
+  \phi_{4j} & = \gamma_{70}   + \mu_{6j}\\
+  \phi_{7j} & = \gamma_{80}   + \mu_{7j}\\
+  \left[\begin{array}
+  {rrr}
+  \mu_{0tj}\\
+  \mu_{1tj}\\
+  \mu_{2tj}\\
+  \mu_{3tj}\\
+  \mu_{4tj}\\
+  \mu_{5tj}\\
+  \mu_{6tj}\\
+  \mu_{7tj}\\
+  \end{array}\right] & \sim \mathcal{N}
+  \begin{pmatrix}
+  \left[\begin{array}
+  {rrr}
+  0\\
+  0\\
+  0\\
+  0\\
+  0\\
+  0\\
+  0\\
+  0\\
+  \end{array}\right],
+  \left[\begin{array}
+  {rrr}
+   \tau_{00}^2 & & & & & & & \\
+   \tau_{01}^2 & \tau_{11}^2 & & & & & & \\
+   \tau_{02}^2 & \tau_{21}^2 & \tau_{22}^2 & & & & & \\
+   \tau_{03}^2 & \tau_{31}^2 & \tau_{32}^2 & \tau_{33}^2 & & & & \\
+   \tau_{04}^2 & \tau_{41}^2 & \tau_{42}^2 & \tau_{43}^2 & \tau_{44}^2 & & & \\
+   \tau_{05}^2 & \tau_{51}^2 & \tau_{52}^2 & \tau_{53}^2 & \tau_{54}^2 & \tau_{55}^2 & & \\
+   \tau_{06}^2 & \tau_{61}^2 & \tau_{62}^2 & \tau_{63}^2 & \tau_{64}^2 & \tau_{65}^2 & \tau_{66}^2 & \\
+   \tau_{07}^2 & \tau_{71}^2 & \tau_{72}^2 & \tau_{73}^2 & \tau_{74}^2 & \tau_{75}^2 & \tau_{76}^2 & \tau_{77}^2 \\
+  \end{array}\right]
+  \end{pmatrix}\\
+\end{aligned}
+$$
+
+Father's equation 
+
+$$
+\begin{aligned}
+  \text{WITHIN MODEL - FATHER} & \\
+  \text{Dad}_{tj}^w    & =  \text{Dad}_{j}^b + \phi_{4j} \text{Dad}_{(t-1)j}^w + \phi_{5j} \text{Mom}_{(t-1)j}^w + \phi_{6j} \text{Infant}_{(t-1)j}^w + e_{1tj}  \\
+  \text{Mom}_{tj}^w    & =  \text{Mom}_{j}^b + \phi_{1j} \text{Mom}_{(t-1)j}^w  + e_{2tj}  \\
+  \text{Infant}_{tj}^w    & =  \text{Infant}_{j}^b + \phi_{7j} \text{Infant}_{(t-1)j}^w  + e_{3tj}  \\
+  \left[\begin{array}
+  {rrr}
+  e_{1tj}\\
+  e_{2tj}\\
+  e_{3tj}\\
+  \end{array}\right] & \sim \mathcal{N}
+  \begin{pmatrix}
+  \left[\begin{array}
+  {rrr}
+  0\\
+  0\\
+  0\\
+  \end{array}\right],
+  \left[\begin{array}
+  {rrr}
+   \sigma_{1}^2 & & \\
+   \sigma_{21}^2 & \sigma_{2}^2 & \\
+   \sigma_{31}^2 & \sigma_{32}^2 & \sigma_{3}^2 \\
+   \end{array}\right]
+  \end{pmatrix} \\
+  \text{BETWEEN MODEL - FATHER} & \\
+  \text{Dad}_{j}^b & = \gamma_{10} + \mu_{0j}\\
+  \text{Mom}_{j}^b & = \gamma_{20} + \mu_{1j}\\
+  \text{Infant}_{j}^b & = \gamma_{30} + \mu_{2j}\\
+  \phi_{4j} & = \gamma_{40}  + \mu_{3j}\\
+  \phi_{5j} & = \gamma_{50}   + \mu_{4j}\\
+  \phi_{6j} & = \gamma_{60}   + \mu_{5j}\\
+  \phi_{1j} & = \gamma_{70}   + \mu_{6j}\\
+  \phi_{7j} & = \gamma_{80}   + \mu_{7j}\\
+  \left[\begin{array}
+  {rrr}
+  \mu_{0tj}\\
+  \mu_{1tj}\\
+  \mu_{2tj}\\
+  \mu_{3tj}\\
+  \mu_{4tj}\\
+  \mu_{5tj}\\
+  \mu_{6tj}\\
+  \mu_{7tj}\\
+  \end{array}\right] & \sim \mathcal{N}
+  \begin{pmatrix}
+  \left[\begin{array}
+  {rrr}
+  0\\
+  0\\
+  0\\
+  0\\
+  0\\
+  0\\
+  0\\
+  0\\
+  \end{array}\right],
+  \left[\begin{array}
+  {rrr}
+   \tau_{00}^2 & & & & & & & \\
+   \tau_{01}^2 & \tau_{11}^2 & & & & & & \\
+   \tau_{02}^2 & \tau_{21}^2 & \tau_{22}^2 & & & & & \\
+   \tau_{03}^2 & \tau_{31}^2 & \tau_{32}^2 & \tau_{33}^2 & & & & \\
+   \tau_{04}^2 & \tau_{41}^2 & \tau_{42}^2 & \tau_{43}^2 & \tau_{44}^2 & & & \\
+   \tau_{05}^2 & \tau_{51}^2 & \tau_{52}^2 & \tau_{53}^2 & \tau_{54}^2 & \tau_{55}^2 & & \\
+   \tau_{06}^2 & \tau_{61}^2 & \tau_{62}^2 & \tau_{63}^2 & \tau_{64}^2 & \tau_{65}^2 & \tau_{66}^2 & \\
+   \tau_{07}^2 & \tau_{71}^2 & \tau_{72}^2 & \tau_{73}^2 & \tau_{74}^2 & \tau_{75}^2 & \tau_{76}^2 & \tau_{77}^2 \\
+  \end{array}\right]
+  \end{pmatrix}\\
+\end{aligned}
+$$
+
+Infant's Equation
+
+$$
+\begin{aligned}
+  \text{WITHIN MODEL - INFANT} & \\
+  \text{Infant}_{tj}^w    & =  \text{Infant}_{j}^b + \phi_{7j} \text{Infant}_{(t-1)j}^w + \phi_{8j} \text{Mom}_{(t-1)j}^w + \phi_{9j} \text{Dad}_{(t-1)j}^w + e_{1tj}  \\
+  \text{Mom}_{tj}^w    & =  \text{Mom}_{j}^b + \phi_{1j} \text{Mom}_{(t-1)j}^w  + e_{2tj}  \\
+  \text{Dad}_{tj}^w    & =  \text{Dad}_{j}^b + \phi_{4j} \text{Dad}_{(t-1)j}^w  + e_{3tj}  \\
+  \left[\begin{array}
+  {rrr}
+  e_{1tj}\\
+  e_{2tj}\\
+  e_{3tj}\\
+  \end{array}\right] & \sim \mathcal{N}
+  \begin{pmatrix}
+  \left[\begin{array}
+  {rrr}
+  0\\
+  0\\
+  0\\
+  \end{array}\right],
+  \left[\begin{array}
+  {rrr}
+   \sigma_{1}^2 & & \\
+   \sigma_{21}^2 & \sigma_{2}^2 & \\
+   \sigma_{31}^2 & \sigma_{32}^2 & \sigma_{3}^2 \\
+   \end{array}\right]
+  \end{pmatrix} \\
+  \text{BETWEEN MODEL - INFANT} & \\
+  \text{Infant}_{j}^b & = \gamma_{10} + \mu_{0j}\\
+  \text{Mom}_{j}^b & = \gamma_{20} + \mu_{1j}\\
+  \text{Dad}_{j}^b & = \gamma_{30} + \mu_{2j}\\
+  \phi_{7j} & = \gamma_{40}  + \mu_{3j}\\
+  \phi_{8j} & = \gamma_{50}   + \mu_{4j}\\
+  \phi_{9j} & = \gamma_{60}   + \mu_{5j}\\
+  \phi_{1j} & = \gamma_{70}   + \mu_{6j}\\
+  \phi_{4j} & = \gamma_{80}   + \mu_{7j}\\
+  \left[\begin{array}
+  {rrr}
+  \mu_{0tj}\\
+  \mu_{1tj}\\
+  \mu_{2tj}\\
+  \mu_{3tj}\\
+  \mu_{4tj}\\
+  \mu_{5tj}\\
+  \mu_{6tj}\\
+  \mu_{7tj}\\
+  \end{array}\right] & \sim \mathcal{N}
+  \begin{pmatrix}
+  \left[\begin{array}
+  {rrr}
+  0\\
+  0\\
+  0\\
+  0\\
+  0\\
+  0\\
+  0\\
+  0\\
+  \end{array}\right],
+  \left[\begin{array}
+  {rrr}
+   \tau_{00}^2 & & & & & & & \\
+   \tau_{01}^2 & \tau_{11}^2 & & & & & & \\
+   \tau_{02}^2 & \tau_{21}^2 & \tau_{22}^2 & & & & & \\
+   \tau_{03}^2 & \tau_{31}^2 & \tau_{32}^2 & \tau_{33}^2 & & & & \\
+   \tau_{04}^2 & \tau_{41}^2 & \tau_{42}^2 & \tau_{43}^2 & \tau_{44}^2 & & & \\
+   \tau_{05}^2 & \tau_{51}^2 & \tau_{52}^2 & \tau_{53}^2 & \tau_{54}^2 & \tau_{55}^2 & & \\
+   \tau_{06}^2 & \tau_{61}^2 & \tau_{62}^2 & \tau_{63}^2 & \tau_{64}^2 & \tau_{65}^2 & \tau_{66}^2 & \\
+   \tau_{07}^2 & \tau_{71}^2 & \tau_{72}^2 & \tau_{73}^2 & \tau_{74}^2 & \tau_{75}^2 & \tau_{76}^2 & \tau_{77}^2 \\
+  \end{array}\right]
+  \end{pmatrix}\\
+\end{aligned}
+$$
+
+Mother's Equation (HCC)
+
+$$
+\begin{aligned}
+  \text{WITHIN MODEL - MOTHER} & \\
+  \text{Mom}_{tj}^w    & =  \text{Mom}_{j}^b + \phi_{1j} \text{Mom}_{(t-1)j}^w + \phi_{2j} \text{Dad}_{(t-1)j}^w + \phi_{3j} \text{Infant}_{(t-1)j}^w + e_{1tj}  \\
+  \text{Dad}_{tj}^w    & =  \text{Dad}_{j}^b + \phi_{4j} \text{Dad}_{(t-1)j}^w  + e_{2tj}  \\
+  \text{Infant}_{tj}^w    & =  \text{Infant}_{j}^b + \phi_{7j} \text{Infant}_{(t-1)j}^w  + e_{3tj}  \\
+  \left[\begin{array}
+  {rrr}
+  e_{1tj}\\
+  e_{2tj}\\
+  e_{3tj}\\
+  \end{array}\right] & \sim \mathcal{N}
+  \begin{pmatrix}
+  \left[\begin{array}
+  {rrr}
+  0\\
+  0\\
+  0\\
+  \end{array}\right],
+  \left[\begin{array}
+  {rrr}
+   \sigma_{1}^2 & & \\
+   \sigma_{21}^2 & \sigma_{2}^2 & \\
+   \sigma_{31}^2 & \sigma_{32}^2 & \sigma_{3}^2 \\
+   \end{array}\right]
+  \end{pmatrix} \\
+  \text{BETWEEN MODEL - MOTHER} & \\
+  \text{Mom}_{j}^b & =       \gamma_{10} + \gamma_{11} \text{Mother's HCC}_{j} + \mu_{0j}\\
+  \text{Dad}_{j}^b & =       \gamma_{20} +  \mu_{1j}\\
+  \text{Infant}_{j}^b & =    \gamma_{30} +  \mu_{2j}\\
+  \phi_{1j} & = \gamma_{40}  +\gamma_{41} \text{Mother's HCC}_{j} + \mu_{3j}\\
+  \phi_{2j} & = \gamma_{50}  +\gamma_{51} \text{Mother's HCC}_{j} + \mu_{4j}\\
+  \phi_{3j} & = \gamma_{60}  +\gamma_{61} \text{Mother's HCC}_{j} + \mu_{5j}\\
+  \phi_{4j} & = \gamma_{70}  + \mu_{6j}\\
+  \phi_{7j} & = \gamma_{80}  + \mu_{7j}\\
+  \left[\begin{array}
+  {rrr}
+  \mu_{0tj}\\
+  \mu_{1tj}\\
+  \mu_{2tj}\\
+  \mu_{3tj}\\
+  \mu_{4tj}\\
+  \mu_{5tj}\\
+  \mu_{6tj}\\
+  \mu_{7tj}\\
+  \end{array}\right] & \sim \mathcal{N}
+  \begin{pmatrix}
+  \left[\begin{array}
+  {rrr}
+  0\\
+  0\\
+  0\\
+  0\\
+  0\\
+  0\\
+  0\\
+  0\\
+  \end{array}\right],
+  \left[\begin{array}
+  {rrr}
+   \tau_{00}^2 & & & & & & & \\
+   \tau_{01}^2 & \tau_{11}^2 & & & & & & \\
+   \tau_{02}^2 & \tau_{21}^2 & \tau_{22}^2 & & & & & \\
+   \tau_{03}^2 & \tau_{31}^2 & \tau_{32}^2 & \tau_{33}^2 & & & & \\
+   \tau_{04}^2 & \tau_{41}^2 & \tau_{42}^2 & \tau_{43}^2 & \tau_{44}^2 & & & \\
+   \tau_{05}^2 & \tau_{51}^2 & \tau_{52}^2 & \tau_{53}^2 & \tau_{54}^2 & \tau_{55}^2 & & \\
+   \tau_{06}^2 & \tau_{61}^2 & \tau_{62}^2 & \tau_{63}^2 & \tau_{64}^2 & \tau_{65}^2 & \tau_{66}^2 & \\
+   \tau_{07}^2 & \tau_{71}^2 & \tau_{72}^2 & \tau_{73}^2 & \tau_{74}^2 & \tau_{75}^2 & \tau_{76}^2 & \tau_{77}^2 \\
+  \end{array}\right]
+  \end{pmatrix}\\
+\end{aligned}
+$$
+
+Model 1
+Create table
+```{r}
+create_nice_table_baseline <- function(table_inp){
+      #Change all strings to lower case
+      table_inp$paramHeader <- tolower(table_inp$paramHeader)
+      table_inp$param <- tolower(table_inp$param)
+
+      #Trim strings
+      table_inp$paramHeader <- str_remove(table_inp$paramHeader, ".on")
+
+      #Create a single column for the credible intervals
+      #Create a new columns that denotes "significance"
+      table_inp$CR <- NA
+      table_inp$Sig. <- NA
+      for(j in 1:nrow(table_inp)){
+        table_inp$Sig.[j] <- ifelse((sign(table_inp$upper_2.5ci[j])==sign(table_inp$lower_2.5ci[j])),"*"," ")
+        table_inp$CR[j] <- paste("[",table_inp$lower_2.5ci[j],",",table_inp$upper_2.5ci[j],"]", sep = "")
+      }
+
+      #Drop unneeded columns
+      table_inp <- table_inp %>% select(-lower_2.5ci, -upper_2.5ci, -pval)
+
+      #Rename parameters
+      names_parTable <- c("Y", "X", "Est.", "Post.SD","sig", "BetweenWithin", "Cred.Int.", "Sig.")
+      names(table_inp) <- names_parTable
+
+      #Rename cells
+      table_inp$Y <- str_replace(table_inp$Y, "phi", "\U03c6")
+      table_inp$Y <- str_replace(table_inp$Y, "aff_m", "Mom Aff.")
+      table_inp$Y <- str_replace(table_inp$Y, "aff_d", "Dad Aff.")
+      table_inp$Y <- str_replace(table_inp$Y, "aff_i", "Inf. Aff.")
+
+      table_inp$Y <- str_remove(table_inp$Y, ".with")
+
+      table_inp$X <- str_replace(table_inp$X, "aff_m", "MomAff.")
+      table_inp$X <- str_replace(table_inp$X, "aff_d", "DadAff.")
+      table_inp$X <- str_replace(table_inp$X, "aff_i", "Inf.Aff.")
+
+      table_inp$X <- str_replace(table_inp$X, "&1", " & LAG1")
+      table_inp$X <- str_replace(table_inp$X, "MomAff. & LAG1", "MA & LAG1")
+      table_inp$X <- str_replace(table_inp$X, "DadAff. & LAG1", "DA & LAG1")
+      table_inp$X <- str_replace(table_inp$X, "Inf.Aff. & LAG1", "IA & LAG1")
+
+      table_inp <- table_inp[order(table_inp$Y),]
+
+      table_inp$Est. <- as.character(table_inp$Est.)
+      table_inp$Post.SD <- as.character(table_inp$Post.SD)
+
+      table_out <- table_inp 
+  return(table_out)
+}
+
+
+tab_Mod1_tri_std <- create_nice_table_baseline(models1_stdyx) %>% dplyr::filter(BetweenWithin == "Within.Std.Averaged.Over.Clusters") %>% dplyr::select(-BetweenWithin, -sig)
+tab_Mod1_tri_und <- create_nice_table_baseline(models1_unstand) %>% dplyr::filter(Y== "means") %>% dplyr::select(-BetweenWithin, -sig)
+
+
+add_gammas <- function(table_inp){
+  parameters_symb <- c("\U03b3", "\U03b3", "\U03b3",
+                     "\U03b3", "\U03b3", "\U03b3",
+                     "\U03b3", "\U03b3", "\U03b3")
+parameters_num <- c("10", "20", "30",
+                    "50", "60", "70",
+                    "90","100","110")
+paste(parameters_symb, parameters_num, sep="")
+parameters_df <- data.frame(paste(parameters_symb, parameters_num, sep=""))
+names(parameters_df) <- c("Parameter")
+new_names <- c(names(parameters_df), names(table_inp))
+table_out <- cbind(parameters_df, table_inp)
+names(table_out) <- new_names
+table_out <- table_out %>% select(Y,X,Parameter,Est.,Post.SD,Cred.Int.,Sig.)
+return(table_out)
+}
+tab_Mod1_tri_std <- add_gammas(tab_Mod1_tri_std)
+tab_Mod1_tri_und <- add_gammas(tab_Mod1_tri_und)
+
+tab_Mod1_tri_std$Std.<- "*"
+tab_Mod1_tri_und$Std.<- " "
+
+tab_Mod1_tri_all <- rbind(tab_Mod1_tri_std, tab_Mod1_tri_und)
+
+footnote.baseline <- c("Unstandardized estimates are reported above, and within-family standardized estimates averaged across clusters are reported below in accordance with suggestions by Schuurman et al. (2016). 'Est.' = Posterior median, 'Post.SD' = Posterior standard deviation, 'Cred.Int.' = 95% Credible interval derived from posterior distribution, 'Sig.' = Denotes credible intervals that do not contain zero. 'Std.' = Denotes standardized estimates. 'MA & LAG1', 'DA & LAG1', and 'IA & LAG1' refer to maternal, paternal, and infant affect, respectively, measured with a one-second lag")
+```
+
+
+```{r, echo=FALSE}
+# Baseline Model
+nice_table(
+  tab_Mod1_tri_all,
+  title = c("Table 1", "Unstandardized and Standardized Estimates of Autoregressive and Cross-Lagged Effects"),
+  footnote = footnote.baseline) %>%
+  bold(~ Sig. == "*", ~ Y + X + Parameter + Est. + Post.SD + Cred.Int. + Sig. + Std., bold = TRUE)  %>%
+  bg(bg = "gray", part = "header") %>%
+  line_spacing(space = .5, part = "body", unit = "in") %>%
+  line_spacing(space = 1, part = "header", unit = "in") %>%
+  fontsize(size = 10, part = "footer") %>%
+  fontsize(size = 12, part = "body")
+```
+
+
+<!-- Models 3 - 6 -->
+<!-- Create tables -->
+<!-- ```{r, echo = FALSE, message = FALSE, warning = FALSE, include = FALSE} -->
+<!-- create_nice_tables <- function(table_inp){ -->
+<!--       table_inp$paramHeader <- tolower(table_inp$paramHeader) -->
+<!--       table_inp$param <- tolower(table_inp$param) -->
+
+<!--       #Trim strings -->
+<!--       table_inp$paramHeader <- str_remove(table_inp$paramHeader, ".on") -->
+
+<!--       #Create a single column for the credible intervals -->
+<!--       #Create a new columns that denotes "significance" -->
+<!--       table_inp$CR <- NA -->
+<!--       table_inp$Sig. <- NA -->
+<!--       for(j in 1:nrow(table_inp)){ -->
+<!--         table_inp$Sig.[j] <- ifelse((sign(table_inp$upper_2.5ci[j])==sign(table_inp$lower_2.5ci[j])),"*"," ") -->
+<!--         table_inp$CR[j] <- paste("[",table_inp$lower_2.5ci[j],",",table_inp$upper_2.5ci[j],"]", sep = "") -->
+<!--       } -->
+
+<!--       #Drop unneeded columns -->
+<!--       table_inp <- table_inp %>% select(-lower_2.5ci, -upper_2.5ci, -pval) -->
+
+<!--       #Rename parameters -->
+<!--       names_parTable <- c("Y", "X", "Est.", "Post.SD", "sig","BetweenWithin", "Cred.Int.", "Sig.") -->
+<!--       names(table_inp) <- names_parTable -->
+
+<!--       #Rename cells -->
+<!--       table_inp$Y <- str_replace(table_inp$Y, "phi", "\U03c6") -->
+<!--       table_inp$Y <- str_replace(table_inp$Y, "aff_m", "MomAff.") -->
+<!--       table_inp$Y <- str_replace(table_inp$Y, "aff_d", "DadAff.") -->
+<!--       table_inp$Y <- str_replace(table_inp$Y, "aff_i", "Inf.Aff.") -->
+<!--       table_inp$Y <- str_remove(table_inp$Y, ".with") -->
+
+<!--       table_inp$X <- str_replace(table_inp$X, "aff_m", "MomAff.") -->
+<!--       table_inp$X <- str_replace(table_inp$X, "aff_d", "DadAff.") -->
+<!--       table_inp$X <- str_replace(table_inp$X, "aff_i", "Inf.Aff.") -->
+
+<!--       table_inp$X <- str_replace(table_inp$X, "ai", "Age") -->
+<!--       table_inp$X <- str_replace(table_inp$X, "si", "Sex") -->
+<!--       table_inp$X <- str_replace(table_inp$X, "bw", "Wt.") -->
+<!--       table_inp$X <- str_replace(table_inp$X, "zg", "Gest.") -->
+
+<!--       table_inp$X <- str_replace(table_inp$X, "om", "OT(Mom)") -->
+<!--       table_inp$X <- str_replace(table_inp$X, "od", "OT(Dad)") -->
+
+<!--       table_inp$X <- str_replace(table_inp$X, "hm", "HCC(Mom)") -->
+<!--       table_inp$X <- str_replace(table_inp$X, "hd", "HCC(Dad)") -->
+<!--       table_inp$X <- str_replace(table_inp$X, "hi", "HCC(Inf.)") -->
+
+<!--       table_inp$X <- str_replace(table_inp$X, "dm", "PPD(Mom)") -->
+<!--       table_inp$X <- str_replace(table_inp$X, "dd", "PPD(Dad)") -->
+
+<!--       table_inp$X <- str_replace(table_inp$X, "pm", "PSI(Mom)") -->
+<!--       table_inp$X <- str_replace(table_inp$X, "pd", "PSI(Dad)") -->
+
+<!--       table_inp$Est. <- as.character(table_inp$Est.) -->
+<!--       table_inp$Post.SD <- as.character(table_inp$Post.SD) -->
+
+<!--       table_out <- table_inp %>% dplyr::select(-BetweenWithin, -sig) -->
+<!--       return(table_out) -->
+<!-- } -->
+
+<!-- tab_Mod3to6_stx <- create_nice_tables(models3to6_stdyx) -->
+<!-- tab_Mod3to6_und <- create_nice_tables(models3to6_unstand) -->
+
+<!-- tab_ModAll_stx <- create_nice_tables(models_all_stdyx) -->
+<!-- tab_ModAll_und <- create_nice_tables(models_all_unstand) -->
+
+<!-- tab_ModAll_stx$Std. <- "*" -->
+<!-- tab_ModAll_und$Std. <- " " -->
+
+<!-- format_table <- function(table_inp){ -->
+<!-- table_inp$Model <- c("Infant", "Mother", "Mother","Father") -->
+<!-- table_inp <- table_inp %>% select(Model, Y, X, Est., Post.SD, Cred.Int., Std.) -->
+<!-- } -->
+
+<!-- tab_ModAll_stx <- format_table(tab_ModAll_stx) -->
+<!-- tab_ModAll_und <- format_table(tab_ModAll_und) -->
+
+<!-- tab_ModAll_all <- rbind(tab_ModAll_stx, tab_ModAll_und) -->
+
+<!-- footnote.sig <- c("Only statistically significant moderation effects are reported from Models 3 - 6. Unstandardized estimates are reported above, and within-family standardized estimates averaged across clusters are reported below in accordance with suggestions by Schuurman et al. (2016). 'Est.' = Posterior median, 'Post.SD' = Posterior standard deviation, 'Cred.Int.' = 95% Credible interval derived from posterior distribution.'Std.' = Denotes standardized estimates. HCC = Hair cortisol concentration at six-months postpartum. PSI = Parenting Stress. OT = Extracted oxytocin ") -->
+<!-- ``` -->
+
+<!-- Significant effects across Models 3 - 6 -->
+<!-- ```{r} -->
+<!-- nice_table( -->
+<!--   tab_ModAll_all, -->
+<!--   title = c("Table 2", "Parent's hair cortisol, stress, and oxytocin moderate affective synchrony"), -->
+<!--   footnote = footnote.sig) %>% -->
+<!--   bg(bg = "gray", part = "header") %>% -->
+<!--   line_spacing(space = .5, part = "body", unit = "in") %>% -->
+<!--   line_spacing(space = 1, part = "header", unit = "in") %>% -->
+<!--   fontsize(size = 10, part = "footer") %>% -->
+<!--   fontsize(size = 12, part = "body") -->
+<!-- ``` -->
+
+<!-- Moderation effects for Model 3 (sig and non-sig) -->
+<!-- ```{r} -->
+
+<!-- models3_stdyx_all <- list() -->
+<!-- for(i in 1:length(models_all_list)){ -->
+<!--   models3_stdyx_all[[i]] <- models_all_list[[i]]$parameters$stdyx.standardized -->
+<!-- } -->
+<!-- models3_stdyx_all <- do.call("rbind", models3_stdyx_all) -->
+<!-- models3_stdyx_all <- models3_stdyx_all %>% dplyr::filter(param == "HM"| -->
+<!--                                                      param == "HD") %>% -->
+<!--   dplyr::filter(paramHeader != "Variances") %>% -->
+<!--   dplyr::filter(paramHeader != "Means") -->
+<!-- models3_stdyx_all <- models3_stdyx_all[order(models3_stdyx_all$param,models3_stdyx_all$paramHeader),] -->
+
+<!-- tab_Mod3_stdyx <- create_nice_tables(models3_stdyx_all) -->
+
+<!-- footnote.mod3 <- c("Within-family standardized estimates averaged across clusters are reported below in accordance with suggestions by Schuurman et al. (2016). 'Est.' = Posterior median, 'Post.SD' = Posterior standard deviation, 'Cred.Int.' = 95% Credible interval derived from posterior distribution.'Std.' = Denotes standardized estimates. HCC = Hair cortisol concentration at six-months postpartum. PSI = Parenting Stress. OT = Extracted oxytocin ") -->
+
+<!-- nice_table( -->
+<!--   tab_Mod3_stdyx, -->
+<!--   title = c("Table 3", "Parent's hair cortisol moderates affective synchrony"), -->
+<!--   footnote = footnote.mod3) %>% -->
+<!--   bg(bg = "gray", part = "header") %>% -->
+<!--   line_spacing(space = .5, part = "body", unit = "in") %>% -->
+<!--   line_spacing(space = 1, part = "header", unit = "in") %>% -->
+<!--   fontsize(size = 10, part = "footer") %>% -->
+<!--   fontsize(size = 12, part = "body") -->
+<!-- ``` -->
+
+
+<!-- Moderation effects for Model 4 (sig and non-sig) -->
+<!-- ```{r} -->
+
+<!-- models4_stdyx_all <- list() -->
+<!-- for(i in 1:length(models_all_list)){ -->
+<!--   models4_stdyx_all[[i]] <- models_all_list[[i]]$parameters$stdyx.standardized -->
+<!-- } -->
+<!-- models4_stdyx_all <- do.call("rbind", models4_stdyx_all) -->
+<!-- models4_stdyx_all <- models4_stdyx_all %>% dplyr::filter(param == "PM"| -->
+<!--                                                      param == "PD") %>% -->
+<!--   dplyr::filter(paramHeader != "Variances") %>% -->
+<!--   dplyr::filter(paramHeader != "Means") -->
+<!-- models4_stdyx_all <- models4_stdyx_all[order(models4_stdyx_all$param,models4_stdyx_all$paramHeader),] -->
+
+<!-- tab_Mod4_stdyx <- create_nice_tables(models4_stdyx_all) -->
+
+<!-- footnote.Mod4 <- c("Within-family standardized estimates averaged across clusters are reported below in accordance with suggestions by Schuurman et al. (2016). 'Est.' = Posterior median, 'Post.SD' = Posterior standard deviation, 'Cred.Int.' = 95% Credible interval derived from posterior distribution.'Std.' = Denotes standardized estimates. HCC = Hair cortisol concentration at six-months postpartum. PSI = Parenting Stress. OT = Extracted oxytocin ") -->
+
+<!-- nice_table( -->
+<!--   tab_Mod4_stdyx, -->
+<!--   title = c("Table 4", "Parent's hair cortisol moderates affective synchrony"), -->
+<!--   footnote = footnote.Mod4) %>% -->
+<!--   bg(bg = "gray", part = "header") %>% -->
+<!--   line_spacing(space = .5, part = "body", unit = "in") %>% -->
+<!--   line_spacing(space = 1, part = "header", unit = "in") %>% -->
+<!--   fontsize(size = 10, part = "footer") %>% -->
+<!--   fontsize(size = 12, part = "body") -->
+<!-- ``` -->
